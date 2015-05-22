@@ -1,2 +1,8 @@
 # coupondunia_api
-Find all coupondunia offers for every site.
+Find all offers for every site.
+
+pass params to search_page() function 
+search_page('paytm')
+to get all the offers.
+
+:)
