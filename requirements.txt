@@ -1,3 +1,6 @@
 # installation requirements
 requests
 beautifulsoup4
+requests
+Flask
+gunicorn
