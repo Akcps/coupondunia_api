@@ -11,7 +11,7 @@ app.secret_key = os.urandom(24)
 @app.route('/search', methods=['GET'])
 def search():
     try:
-        search_string = requests.args.get('search')
+        search_string = request.args.get('search')
         if not search_string:
             return jsonify({'status': False})
         data = search_page(search_string)

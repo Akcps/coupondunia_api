@@ -28,6 +28,6 @@ def search_page(search_string):
         return offer_list
 
 
-print search_page('paytm')
+#print search_page('paytm')
 
 
