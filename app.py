@@ -20,7 +20,7 @@ def search():
         if val is None:
             print "calling api"
             data = search_page(search_string)
-            cache.set(search_string, str(data), timeout=2*60)
+            cache.set(search_string, str(data), timeout=60*60)
         else:
             print "using cache"
             data = eval(val)
