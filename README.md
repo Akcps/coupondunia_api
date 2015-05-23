@@ -1,2 +1,2 @@
 # coupondunia_api
-Find all coupondunia offers for every site.
+Find all offers for every site.
