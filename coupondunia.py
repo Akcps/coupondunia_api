@@ -2,6 +2,7 @@ __author__ = 'ajitkumar'
 
 import requests
 from bs4 import BeautifulSoup
+import unicodedata
 
 
 def search_page(search_string):
@@ -9,24 +10,39 @@ def search_page(search_string):
         payload = search_string
         response = requests.get('http://www.coupondunia.in/'+payload)
         soup = BeautifulSoup(response.content)
-        offers = soup.find_all('div', {'class': 'offer-title'})
-        offers_description = soup.find_all('div', {'class': 'offer-description-full'})
-        offer_list = []
-        for offer, offer_description in zip(offers, offers_description):
-            offer_dict = {}
-            offer_title = offer.a.string
-            description = offer_description.string
-            if not description:
-                description = offer_description.contents[0]
-            coupon_code = offer.a['data-code']
-            offer_dict['offer_title'] = offer_title
-            offer_dict['offer_description'] = description.strip()
-            offer_dict['coupon_code'] = coupon_code
-            offer_list.append(offer_dict)
+        offers = soup.find_all('div', {'class': 'coupon-big coupon single-merchant'})
+        offer_list = list()
+        for offer in offers:
+            new_offer = dict()
+            offers_coupon = offer.find_all('div', {'class': 'online_offer offer-title get-title-code'})
+            offer_title = offers_coupon[0].span.text
+            offer_title = unicodedata.normalize('NFKD', offer_title).encode('ascii', 'ignore')
+            new_offer['offer_title'] = offer_title
+            url = offers_coupon[0]['data-coupon-url']
+            new_offer['coupon_code'] = get_offer_code(url)
+            offers_description = offer.find_all('div', {'class': 'meta offer-desc'})
+            offer_desc = offers_description[0].text
+            offer_desc = offer_desc.strip()
+            offer_desc = unicodedata.normalize('NFKD', offer_desc).encode('ascii', 'ignore')
+            new_offer['offer_description'] = offer_desc
+            offer_list.append(new_offer)
         return offer_list
     except Exception, excpt:
+        print excpt
         return offer_list
 
+
+def get_offer_code(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content)
+        val = soup.find_all('div', {'class': 'coupon-code_new coupon-code inline-block'})
+        offer_code = val[0].text
+        offer_code = offer_code.strip()
+        return offer_code
+    except Exception, excpt:
+        print excpt
+        return ''
 
 #print search_page('paytm')
 
